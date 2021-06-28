@@ -30,6 +30,7 @@ namespace ProjectManager.ApplicationCore.Services
         public User Authenticate(UserDTO userDTO)
         {
             var user = _userService.GetByEmail(userDTO.Email);
+            if(user == null) return null;
             if (BC.Verify(userDTO.Password, user.Hash))
             {
                 return user;

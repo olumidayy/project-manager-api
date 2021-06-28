@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using ProjectManager.ApplicationCore.Entities;
 using ProjectManager.ApplicationCore.Entities.DTOs;
 using ProjectManager.Data;
-using BC = BCrypt.Net.BCrypt;
 
 namespace ProjectManager.ApplicationCore.Services
 {
@@ -38,7 +36,7 @@ namespace ProjectManager.ApplicationCore.Services
                 LiveLink = projectDTO.LiveLink,
                 Name = projectDTO.Name,
                 OwnerId = userId,
-                sourceCodeLink = projectDTO.sourceCodeLink,
+                sourceCodeLink = projectDTO.SourceCodeLink,
                 Technologies = projectDTO.Technologies
             };
             await _context.Projects.AddAsync(newProject);
@@ -64,7 +62,7 @@ namespace ProjectManager.ApplicationCore.Services
                  projectToUpdate.Description = projectDTO.Description;
                     projectToUpdate.LiveLink = projectDTO.LiveLink;
                     projectToUpdate.Name = projectDTO.Name;
-                    projectToUpdate.sourceCodeLink = projectDTO.sourceCodeLink;
+                    projectToUpdate.sourceCodeLink = projectDTO.SourceCodeLink;
                     projectToUpdate.Technologies = projectDTO.Technologies;
                 await _context.SaveChangesAsync();
             }

@@ -1,7 +1,4 @@
-using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.ApplicationCore.Entities;
 using ProjectManager.ApplicationCore.Entities.DTOs;
@@ -58,11 +55,11 @@ namespace ProjectManager.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public IActionResult GetProjectById(int id)
+        [Route("{projectId}")]
+        public IActionResult GetProjectById(int projectId)
         {
 
-            var project = _projectService.GetById(id);
+            var project = _projectService.GetById(projectId);
             if (project == null)
             {
                 return NotFound(NotFoundError);
@@ -90,13 +87,14 @@ namespace ProjectManager.Controllers
 
 
         [HttpPut]
-        [Route("update/{id}")]
-        public async Task<IActionResult> UpdateProject([FromBody] ProjectDTO projectDTO, int projectId)
+        [Route("update/{projectId}")]
+        public async Task<IActionResult> UpdateProject([FromBody]ProjectDTO projectDTO, int projectId)
         {
             var _currentUser = (User)HttpContext.Items["User"];
             if (ModelState.IsValid)
             {
                 var project = _projectService.GetById(projectId);
+                if(project == null) return BadRequest(new CustomResponse(status: "error", message: "Invalid project ID"));
                 if (_currentUser.Id != project.OwnerId) return Unauthorized(UnauthorizedError);
                 var updatedProject = await _projectService.Update(projectDTO, projectId);
                 if (updatedProject == null) return NotFound(NotFoundError);
@@ -106,7 +104,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpDelete]
-        [Route("delete/{id}")]
+        [Route("delete/{projectId}")]
         public async Task<IActionResult> DeleteProject(int projectId)
         {
             var _currentUser = (User)HttpContext.Items["User"];

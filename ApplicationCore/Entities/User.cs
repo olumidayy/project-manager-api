@@ -19,7 +19,6 @@ namespace ProjectManager.ApplicationCore.Entities
         public AccountType AccountType { get; set; }
         
         [JsonIgnore]
-
         public String Hash { get; set; }
     }
 }

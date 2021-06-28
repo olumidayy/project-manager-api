@@ -54,7 +54,7 @@ namespace ProjectManager.Controllers
                     return BadRequest(new CustomResponse(status: "error", message: "Invalid email or password."));
                 }
                 return Ok(new CustomResponse(
-                    status: "status",
+                    status: "success",
                     message: "Sign in successsful.",
                     data: new { token = _authenticationService.GenerateJwtToken(user) }
                 ));

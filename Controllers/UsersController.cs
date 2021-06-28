@@ -57,7 +57,7 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPut]
-        [Route("update/{id}")]
+        [Route("update")]
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO)
         {
             var _currentUser = (User)HttpContext.Items["User"];
@@ -72,15 +72,15 @@ namespace ProjectManager.Controllers
         }
 
         [HttpDelete]
-        [Route("delete/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [Route("delete/{userId}")]
+        public async Task<IActionResult> DeleteUser(int userId)
         {
             var _currentUser = (User)HttpContext.Items["User"];
-            if(_currentUser.AccountType != AccountType.Admin && _currentUser.Id != id)
+            if(_currentUser.AccountType != AccountType.Admin && _currentUser.Id != userId)
             {
                 return Unauthorized(UnauthorizedError);
             }
-            var userToDelete = await _userService.Delete(id);
+            var userToDelete = await _userService.Delete(userId);
             if(userToDelete == null)
             {
                 return NotFound(NotFoundError);

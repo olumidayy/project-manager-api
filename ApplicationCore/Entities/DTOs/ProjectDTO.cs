@@ -21,6 +21,6 @@ namespace ProjectManager.ApplicationCore.Entities.DTOs
         public String LiveLink { get; set; }
 
         [Required]
-        public String sourceCodeLink { get; set; }
+        public String SourceCodeLink { get; set; }
     }
 }

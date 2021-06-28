@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using ProjectManager.ApplicationCore.Entities;
 using ProjectManager.ApplicationCore.Entities.DTOs;
 using ProjectManager.Data;
