@@ -3,12 +3,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ProjectManager.ApplicationCore.Configuration;
 using ProjectManager.ApplicationCore.Services;
-using ProjectManager.Common;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ProjectManager.Middlewares

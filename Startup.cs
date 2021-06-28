@@ -33,7 +33,7 @@ namespace ProjectManager
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
 
             services.AddDbContext<ApiDbContext>(options => {
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -42,20 +42,6 @@ namespace ProjectManager
 
             services.AddScoped<IUserService, UserService>();
 
-            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            // .AddJwtBearer(options =>
-            // {
-            //     var key = Encoding.ASCII.GetBytes(Configuration["JwtConfig:Secret"]);
-            //     options.TokenValidationParameters = new TokenValidationParameters
-            //     {
-            //         ValidateIssuerSigningKey = true,
-            //         IssuerSigningKey = new SymmetricSecurityKey(key),
-            //         ValidateIssuer = false,
-            //         ValidateAudience = false,
-            //         ValidateLifetime = true,
-            //         RequireExpirationTime = false
-            //     };
-            // });
             services.AddControllers();
 
             services.AddMvc()
