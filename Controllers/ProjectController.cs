@@ -88,7 +88,7 @@ namespace ProjectManager.Controllers
 
         [HttpPut]
         [Route("update/{projectId}")]
-        public async Task<IActionResult> UpdateProject([FromBody]ProjectDTO projectDTO, int projectId)
+        public async Task<IActionResult> UpdateProject([FromBody]UpdateProjectDTO projectDTO, int projectId)
         {
             var _currentUser = (User)HttpContext.Items["User"];
             if (ModelState.IsValid)

@@ -40,15 +40,15 @@ namespace ProjectManager.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public IActionResult GetUserById(int id)
+        [Route("{userId}")]
+        public IActionResult GetUserById(int userId)
         {
             var _currentUser = (User)HttpContext.Items["User"];
-            if(_currentUser.AccountType != AccountType.Admin && _currentUser.Id != id)
+            if(_currentUser.AccountType != AccountType.Admin && _currentUser.Id != userId)
             {
                 return Unauthorized(UnauthorizedError);
             }
-            var user = _userService.GetById(id);
+            var user = _userService.GetById(userId);
             if(user == null)
             {
                 return NotFound(NotFoundError);
@@ -58,7 +58,7 @@ namespace ProjectManager.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO userDTO)
         {
             var _currentUser = (User)HttpContext.Items["User"];
             if(ModelState.IsValid)

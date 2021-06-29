@@ -17,7 +17,7 @@ namespace ProjectManager.ApplicationCore.Services
 
         Task<User> Create(UserDTO userDTO);
 
-        Task<User> Update(UserDTO userDTO, int id);
+        Task<User> Update(UpdateUserDTO userDTO, int id);
 
         Task<User> Delete(int id);
         
@@ -54,7 +54,7 @@ namespace ProjectManager.ApplicationCore.Services
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public async Task<User> Update(UserDTO userDTO, int id)
+        public async Task<User> Update(UpdateUserDTO userDTO, int id)
         {
             var userToUpdate = _context.Users.FirstOrDefault(u => u.Id == id);
             if(userToUpdate != null)
