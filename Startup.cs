@@ -31,6 +31,7 @@ namespace ProjectManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
 
             services.AddDbContext<ApiDbContext>(options => {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -38,11 +39,15 @@ namespace ProjectManager
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            services.AddSingleton<IEmailService, EmailService>();
+
             services.AddScoped<IProjectService, ProjectService>();
 
             services.AddScoped<IUserService, UserService>();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
+
+            // services.AddControllers();
 
             services.AddMvc()
             .ConfigureApiBehaviorOptions(options =>

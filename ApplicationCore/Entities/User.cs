@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using ProjectManager.ApplicationCore.Enums;
 
 namespace ProjectManager.ApplicationCore.Entities
@@ -17,6 +17,9 @@ namespace ProjectManager.ApplicationCore.Entities
         public String Email { get; set; }
 
         public AccountType AccountType { get; set; }
+
+        [JsonIgnore]
+        public int Otp { get; set; }
         
         [JsonIgnore]
         public String Hash { get; set; }

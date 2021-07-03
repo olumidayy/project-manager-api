@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.ApplicationCore.Entities;
 using ProjectManager.ApplicationCore.Entities.DTOs;
@@ -56,6 +57,42 @@ namespace ProjectManager.Controllers
             return Ok(new CustomResponse(status: "success", message: "User fetched.", data: user));
         }
 
+        [HttpPost]
+        [Route("send-otp")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendOTP([FromBody] SendOtpDTO sendOtpDTO)
+        {
+            if(ModelState.IsValid)
+            {
+                var user =  _userService.GetByEmail(sendOtpDTO.Email);
+                if(user != null)
+                {
+                    await _userService.SendRecoveryEmail(user);
+                    return Ok(new CustomResponse(status: "success", message: "OTP sent."));
+                }
+                return NotFound(NotFoundError);
+            }
+            return BadRequest(new CustomResponse(ModelState));
+        }
+
+        [HttpPost]
+        [Route("confirm-otp")]
+        [AllowAnonymous]
+        public IActionResult ConfirmOTP([FromBody] ConfirmOtpDTO confirmOtpDTO)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = _userService.GetByEmail(confirmOtpDTO.Email);
+                if(user != null)
+                {
+                    bool isValid = _userService.ConfirmOTP(user, confirmOtpDTO.Otp);
+                    return Ok(new CustomResponse(status: "success", message: "OTP confirmed."));
+                }
+                return NotFound(NotFoundError);
+            }
+            return BadRequest(new CustomResponse(ModelState));
+        }
+
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO userDTO)
@@ -66,6 +103,24 @@ namespace ProjectManager.Controllers
                 var userToUpdate = await _userService.Update(userDTO, _currentUser.Id);
                 if(userToUpdate != null)
                     return Ok(new CustomResponse(status: "success", message: "User updated.", userToUpdate));
+                return NotFound(NotFoundError);
+            }
+            return BadRequest(new CustomResponse(ModelState));
+        }
+        
+        [HttpPatch]
+        [Route("change-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO changePasswordDTO)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = _userService.GetByEmail(changePasswordDTO.Email);
+                if(user != null)
+                {
+                    user = await _userService.ChangePassword(user, changePasswordDTO.Otp, changePasswordDTO.NewPassword);
+                    return Ok(new CustomResponse(status: "success", message: "Password changed."));
+                }
                 return NotFound(NotFoundError);
             }
             return BadRequest(new CustomResponse(ModelState));

@@ -24,14 +24,19 @@ namespace ProjectManager.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+        public async Task<IActionResult> Register([FromBody] RegisterUserDTO userDTO)
         {
             
             if (ModelState.IsValid)
             {
+                if(userDTO.Password != userDTO.ConfirmPassword)
+                {
+                    return BadRequest(new CustomResponse(status: "error", message: "Passwords do not match."));
+                }
                 if (_userService.GetByEmail(userDTO.Email) == null)
                 {
                     var newUser = await _userService.Create(userDTO);
+                    await _userService.SendWelcomeEmail(newUser);
                     return Ok(new CustomResponse(status: "success", message: "Registration", new
                     {
                         token = _authenticationService.GenerateJwtToken(newUser)

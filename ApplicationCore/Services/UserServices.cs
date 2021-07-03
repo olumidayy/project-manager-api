@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,32 +13,36 @@ namespace ProjectManager.ApplicationCore.Services
     {
         IEnumerable<User> GetAll();
         User GetById(int id);
-        
         User GetByEmail(string email);
-
-        Task<User> Create(UserDTO userDTO);
-
+        Task<User> Create(RegisterUserDTO userDTO);
         Task<User> Update(UpdateUserDTO userDTO, int id);
-
         Task<User> Delete(int id);
+        public int GenerateOTP();
+        public Task SendWelcomeEmail(User user);
+        public Task SendRecoveryEmail(User user);
+        public bool ConfirmOTP(User user, int otp);
+        public Task<User> ChangePassword(User user, int otp, string newPassword);
         
     }
 
     public class UserService : IUserService
     {
         private ApiDbContext _context;
-        public UserService(ApiDbContext context)
+        private IEmailService _emailService;
+        public UserService(ApiDbContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
-        public async Task<User> Create(UserDTO userDTO)
+        public async Task<User> Create(RegisterUserDTO userDTO)
         {
             var newUser = new User()
             {
                 Email = userDTO.Email.ToLower(),
                 Name = userDTO.Name,
-                Hash = BC.HashPassword(userDTO.Password)
+                Hash = BC.HashPassword(userDTO.Password),
+                Otp = GenerateOTP()
             };
             await _context.Users.AddAsync(newUser);
             await _context.SaveChangesAsync();
@@ -77,6 +82,51 @@ namespace ProjectManager.ApplicationCore.Services
         public User GetByEmail(string email)
         {
             return _context.Users.SingleOrDefault(u => u.Email == email.ToLower());
+        }
+
+        public int GenerateOTP()
+        {
+            Random rnd = new Random();
+            return (int)rnd.Next(100000, 999999);
+        }
+        public async Task SendWelcomeEmail(User user)
+        {
+            var email = user.Email;
+            var subject = "Welcome to Project Manager";
+            var body = String.Format("Hello {0}, have a fun-filled experience.", user.Name);
+            await _emailService.SendEmailAsync(user.Email, subject, body);
+        }
+
+        public async Task SendRecoveryEmail(User user)
+        {
+            var email = user.Email;
+            var subject = "Password Reset";
+            user.Otp = GenerateOTP();
+            await _context.SaveChangesAsync();
+            var body = String.Format(
+                "Hello {0},\n\nYou have requested for a password reset. Your OTP is {1}.\nIgnore this mail if you didn't request for it.",
+                user.Name,
+                user.Otp
+            );
+            await _emailService.SendEmailAsync(user.Email, subject, body);
+        }
+
+        public bool ConfirmOTP(User user, int otp)
+        {
+            return user.Otp == otp;
+        }
+
+        public async Task<User> ChangePassword(User user, int otp, string newPassword)
+        {
+            if(otp == user.Otp)
+            {
+                user.Hash = BC.HashPassword(newPassword);
+                user.Otp = GenerateOTP();
+                await _context.SaveChangesAsync();
+                return user;
+                
+            }
+            return null;
         }
     }
 }

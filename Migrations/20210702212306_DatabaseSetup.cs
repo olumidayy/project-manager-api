@@ -2,7 +2,7 @@
 
 namespace ProjectManager.Migrations
 {
-    public partial class Databasesetup : Migration
+    public partial class DatabaseSetup : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,11 +13,11 @@ namespace ProjectManager.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OwnerId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Technologies = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LiveLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    sourceCodeLink = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Technologies = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LiveLink = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    sourceCodeLink = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,6 +33,7 @@ namespace ProjectManager.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AccountType = table.Column<int>(type: "int", nullable: false),
+                    Otp = table.Column<int>(type: "int", nullable: false),
                     Hash = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
